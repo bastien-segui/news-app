@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News App</title>
+    <script src="https://kit.fontawesome.com/6ed2121e80.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <span class="logo-title">News App</span>
+        <div>
+            <button type="button" class="btn-headlines">Headlines</button>
+            <button type="button" class="btn-everything">Search by keywords</button>
+        </div>
+        <button type="button" class="btn-open-aside"><i class="fa-solid fa-bookmark btn-bookmark"></i></button>
+
+    </header>
+    <!-- <section class="filters">
+    </section> -->
+    <section class="search-headlines">
+        <p>Search by :</p>
+        <label>Country: </label>
+        <select class='select-headline-country'></select>
+        <label>and / or category: </label>
+        <select class='select-headline-category'></select><br>
+        <label>Source only: </label>
+        <select class='select-headline-source'></select>
+    </section>
+    <section class="search-everything" hidden>
+        <input type="text" placeholder="Enter your search" id="search-input" autocomplete="off">
+        <label>Language: </label>
+        <select class='select-language'></select><br>
+        <button type="button" id="search-btn">Search</button>
+    </section>
+    <section class="filters">
+        <p>Filter the results by :</p>
+        <label>Source: </label>
+        <select class='select-source'></select><br>
+        <label>Or author: </label>
+        <select class='select-author'></select><br>
+    </section>
+    <section class="cards-container-headlines">
+        <div class="cards-container"></div>
+    </section>
+    <section class="cards-container-everything">
+        <div class="cards-container">
+            
+        </div>
+    </section>
+
+    <aside>
+        <button type="button" class="btn-close-aside"><i class="fa-solid fa-xmark"></i></button>
+        <section class="bookmarks"></section>
+    </aside>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>
