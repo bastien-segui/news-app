@@ -1,3 +1,5 @@
+// List from https://newsapi.org/docs/endpoints/top-headlines
+
 export default {
     "ae": "United Arab Emirates",
     "ar": "Argentina",

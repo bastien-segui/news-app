@@ -33,10 +33,16 @@ header {
     z-index:1;
 }
 
+header * {
+    flex-basis:100%;
+}
+
 .logo-title {
     font-size:26px;
     font-weight:900;
     cursor:default;
+    text-align:start;
+    padding:5px;
 }
 
 .btn-headlines, .btn-everything {
@@ -55,8 +61,79 @@ header {
     font-weight:bold;
 }
 
+.btn-open-aside {
+    border:none;
+    transition:translate 0.3s;
+    text-align:end;
+    padding:5px;
+}
 
-/* FILTERS CONTAINER */
+.btn-open-aside:hover {
+    translate:0px 5px;
+}
+
+/* MODAL */
+
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+  
+.btn-close-modal {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+  
+.btn-close-modal:hover,
+.btn-close-modal:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+table {
+    margin-top:30px;
+}
+
+td {
+    text-align:left;
+}
+
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding:5px;
+}
+
+.modal-source-name {
+    font-weight:bold;
+}
+
+.modal-source-description {
+    font-style:italic;
+}
+
+
+/* SEARCH AND FILTERS CONTAINER */
 
 .search-headlines, .search-everything {
     padding:10px 0 10px;
@@ -67,6 +144,11 @@ header {
     margin-right:10px;
 }
 
+.fa-circle-info {
+    color:rgb(59, 59, 199);
+    font-size:15px;
+}
+
 .filters {
     padding:10px 0 10px;
 }
@@ -74,6 +156,10 @@ header {
 .filters p, .search-headlines p {
     margin:0;
     font-weight:bold;
+}
+
+.select-author {
+    max-width:200px;
 }
 
 /* CARDS CONTAINER */
@@ -86,6 +172,7 @@ header {
     grid-template-columns:1fr 1fr 1fr 1fr;
     border-radius:10px;
     gap:20px;
+    z-index:-1;
 }
 
 .card:hover {
@@ -99,7 +186,7 @@ header {
     padding:10px;
 }
 
-img {
+.card-img {
     width:100%;
     height:150px;
     cursor:pointer;
@@ -115,11 +202,16 @@ article:hover img {
     transform:scale(1.05);
 }
 
-p.bookmark {
+.card-save {
+    display:inline-block;
     margin-top:5px;
     font-style:italic;
     font-size:14px;
 
+}
+
+.btn-add-bookmark:active {
+    color:rgb(156, 124, 43);
 }
 
 .fa-bookmark {
@@ -140,17 +232,17 @@ p.bookmark {
     color:rgb(0, 0, 238);
 }
 
-.card-author, .card-number {
+.card-author, .card-number, .card-date {
     font-size:12px;
     font-style:italic;
     margin:10px 0;
 }
 
-/* ASIDE */
+/* ASIDE FOR BOOKMARKS*/
 
 aside {
     position:fixed;
-    width:300px;
+    width:320px;
     height:100vh;
     top:0;
     right:0;
@@ -158,9 +250,26 @@ aside {
     background-color:white;
     overflow:scroll;
     text-align:left;
-    padding-left:10px;
     translate:100%;
     z-index:2;
+}
+
+.aside-top-container {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:5px;
+    position:sticky;
+    top:0;
+    z-index:5;
+    background-color:white;
+    border-bottom:1px solid rgb(145, 141, 141);
+    padding:20px 10px;
+}
+
+.aside-top-container .fa-bookmark {
+    font-size:20px;
+    cursor:default;
 }
 
 .btn-close-aside {
@@ -168,23 +277,32 @@ aside {
     border:1px solid black;
     border-radius:5px;
     padding:0 4px;
-    margin-left:auto;
-    margin-right:5px;
-    margin-top:5px;
-    display:block;
 }
 
 .btn-close-aside:hover {
     border:2px solid black;
 }
 
-.btn-open-aside {
-    border:none;
-    transition:translate 0.3s;
+.bookmarks {
+    padding-left:10px;
 }
 
-.btn-open-aside:hover {
-    translate:0px 5px;
+.card-img-bookmark {
+    display:none;
+    width:150px;
+    height:100px;
+    border-radius:5px;
+    border:1px solid grey;
+}
+
+.fa-image {
+    font-size:14px;
+}
+
+.fa-image:hover+.card-img-bookmark {
+    display:inline-block;
+    position:absolute;
+    transform:translate(0,-56%);
 }
 
 .bookmark-title {
@@ -199,12 +317,78 @@ aside {
     color:rgb(0, 0, 238);
 }
 
+.bookmark-author, .bookmark-date {
+    font-size:12px;
+    font-style:italic;
+    margin-top:5px;
+}
+
 .btn-open-aside .fa-bookmark {
     font-size:30px;
 }
 
-.btn-delete-bookmark {
+.bookmark-icons-container {
+    display:flex;
+    justify-content:end;
+    align-items:center;
+    padding-right:5px;
     margin-bottom:5px;
+}
+
+.btn-delete-bookmark {
     font-size:14px;
-    padding:2px 4px;
+    border:none;
+    margin-right:5px;
+    cursor:pointer;
+}
+
+/* SCROLL TO TOP */
+
+.btn-scroll-to-top {
+    position:fixed;
+    bottom:15px;
+    left:15px;
+    font-size:20px;
+    border:1px solid black;
+    border-radius:50%;
+    padding:4px 8px;
+    background-color:rgba(49, 46, 46, 0.336);
+    color:#fff;
+    z-index:3;
+}
+
+.fa-arrow-up-long {
+    z-index:20;
+}
+
+/* MEDIA QUERIES */
+
+@media only screen and (max-width:600px) {
+    .cards-container {
+        display:block;
+    }
+
+    .cards-container img {
+        max-width:300px;
+        height:auto;
+        margin:0 auto;
+    }
+
+    .card {
+        height:auto;
+    }
+
+    .btn-open-modal {
+        display:none;
+    }
+}
+
+@media only screen and (max-width:768px) {
+    .cards-container {
+        grid-template-columns:1fr 1fr;
+    }
+
+    .btn-open-modal {
+        display:none;
+    }
 }

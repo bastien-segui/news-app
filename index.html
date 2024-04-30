@@ -15,30 +15,45 @@
             <button type="button" class="btn-everything">Search by keywords</button>
         </div>
         <button type="button" class="btn-open-aside"><i class="fa-solid fa-bookmark btn-bookmark"></i></button>
-
     </header>
-    <!-- <section class="filters">
-    </section> -->
+
+    <section class="modal">
+        <div class="modal-content">
+            <span class="btn-close-modal">&times;</span>
+            <h1>Sources available</h1>
+            <table class="source-table">
+                <tr class="table-headings">
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Category <br><select name="" id=""></select></th>
+                    <th>Language <br><select name="" id=""></select></th>
+                    <th>Country <br><select name="" id=""></select></th>
+                </tr>
+                <!-- Sources information rows -->
+            </table>
+          </div>
+    </section>
     <section class="search-headlines">
-        <p>Search by :</p>
-        <label>Country: </label>
+        <p>Search by</p>
+        <label>Country </label>
         <select class='select-headline-country'></select>
-        <label>and / or category: </label>
+        <label>and / or category </label>
         <select class='select-headline-category'></select><br>
-        <label>Source only: </label>
+        <label>Source only </label>
         <select class='select-headline-source'></select>
+        <button type="button" class="btn-open-modal">Sources info <i class="fa-solid fa-circle-info"></i></button>
     </section>
     <section class="search-everything" hidden>
         <input type="text" placeholder="Enter your search" id="search-input" autocomplete="off">
-        <label>Language: </label>
+        <label>Language </label>
         <select class='select-language'></select><br>
         <button type="button" id="search-btn">Search</button>
     </section>
     <section class="filters">
-        <p>Filter the results by :</p>
-        <label>Source: </label>
+        <p>Filter the results by </p>
+        <label>Source </label>
         <select class='select-source'></select><br>
-        <label>Or author: </label>
+        <label>Or author </label>
         <select class='select-author'></select><br>
     </section>
     <section class="cards-container-headlines">
@@ -46,14 +61,24 @@
     </section>
     <section class="cards-container-everything">
         <div class="cards-container">
-            
+            <!-- Cards -->
         </div>
     </section>
 
-    <aside>
-        <button type="button" class="btn-close-aside"><i class="fa-solid fa-xmark"></i></button>
-        <section class="bookmarks"></section>
+    <aside class="bookmarks-aside">
+        <div class="aside-top-container">
+            <i class="fa-solid fa-bookmark"></i>
+            <h2 class="bookmarks-count">Articles saved : 0</h2>
+            <button type="button" class="btn-close-aside"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <section class="bookmarks">
+            <!-- Bookmarks -->
+        </section>
     </aside>
+
+    <a class="btn-scroll-to-top" href="#">
+        <i class="fa-solid fa-arrow-up-long"></i>
+    </a>
 
     <script type="module" src="script.js"></script>
 </body>

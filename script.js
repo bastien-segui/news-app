@@ -1,9 +1,8 @@
 import countries from "./countriesList.js";
+import languages from "./languagesList.js";
 
 const searchInput = document.querySelector("#search-input");
 const searchBtn = document.querySelector("#search-btn");
-const headlinesImgSrc = "./images/headlines.jpg";
-const nonHeadlinesImgSrc = "./images/not-headlines.png";
 const btnHeadlines = document.querySelector(".btn-headlines");
 const btnEverything = document.querySelector(".btn-everything");
 const searchHeadlines = document.querySelector(".search-headlines");
@@ -16,6 +15,13 @@ const selectHeadlinesSource = document.querySelector(".select-headline-source");
 const selectHeadlinesCategory = document.querySelector(".select-headline-category");
 const selectHeadlinesCountry = document.querySelector(".select-headline-country");
 const selectLanguage = document.querySelector(".select-language");
+const modal = document.querySelector(".modal");
+const btnOpenModal = document.querySelector(".btn-open-modal");
+const btnCloseModal = document.querySelector(".btn-close-modal");
+const sourceTable = document.querySelector(".source-table");
+const btnScrollToTop = document.querySelector(".btn-scroll-to-top");
+const bookmarksAside = document.querySelector(".bookmarks-aside");
+const bookmarksCount = document.querySelector(".bookmarks-count");
 const apiKey = "c8cf460922604235832f935727a5c6e4";
 const headlinesViewName = "headlines";
 const everythingViewName = "everything";
@@ -24,18 +30,17 @@ let bookmarksArr = JSON.parse(localStorage.getItem("bookmarks")) || [];
 
 class App {
     currentUrl = "";
-    currentImgSrc = "";
-    activeFilter = false;
     currentView = "";
+    currentFilter = false;
 
     constructor() {
-        // Display US top headlines at initialisation
         this.initEventListeners();
         this.displayCountries();
         this.displayCategories();
         this.displayLanguages();
         this.displayAPISources();
         this.handleSearch(undefined,"headlines");
+        this.createSourcesTable();
         if(JSON.parse(localStorage.getItem("bookmarks"))) this.displayBookmarks(JSON.parse(localStorage.getItem("bookmarks")));
     }
 
@@ -49,12 +54,27 @@ class App {
         btnEverything.addEventListener("click", this.displayEverythingView.bind(this));
         document.querySelector(".btn-close-aside").addEventListener("click", this.closeAside.bind(this));
         document.querySelector(".btn-open-aside").addEventListener("click", this.openAside.bind(this));
+        btnOpenModal.addEventListener("click", this.openModal.bind(this));
+        btnCloseModal.addEventListener("click", function() {
+            modal.style.display = "none";
+        });
+        window.addEventListener("click", function(event) {
+            if (event.target == modal) {
+            modal.style.display = "none";
+            }
+        });        
+        window.addEventListener('scroll', function () { 
+            if (document.body.scrollTop > 50 
+                || document.documentElement.scrollTop > 50) { 
+                btnScrollToTop.style.display = 'block'; 
+            } else { 
+                btnScrollToTop.style.display = 'none'; 
+            } 
+        }); 
     };
 
     displayHeadlinesView() {
-        // btnHeadlines.style.backgroundColor = "rgb(40, 168, 218)";
         btnHeadlines.style.fontWeight = "bold";
-        // btnEverything.style.backgroundColor = "white";
         btnEverything.style.fontWeight = "normal";
         searchHeadlines.hidden = false;
         searchEverything.hidden = true;
@@ -62,12 +82,11 @@ class App {
         cardsContainerEverything.hidden = true;
         this.clearElements(selectSource, selectAuthor);
         this.handleSearch(undefined, headlinesViewName);
+        this.currentFilter = false;
     }
 
     displayEverythingView() {
-        // btnHeadlines.style.backgroundColor = "white";
         btnHeadlines.style.fontWeight = "normal";
-        // btnEverything.style.backgroundColor = "rgb(40, 168, 218)";
         btnEverything.style.fontWeight = "bold";
         searchHeadlines.hidden = true;
         searchEverything.hidden = false;
@@ -76,7 +95,8 @@ class App {
         const cardsContainer = document.querySelector(".cards-container-everything .cards-container");
         this.clearElements(selectSource, selectAuthor, cardsContainer);
         searchInput.value = "";
-        selectLanguage.value = "All languages"
+        selectLanguage.value = "All languages";
+        this.currentFilter = false;
     }
 
     clearElements(...containers) {
@@ -90,17 +110,15 @@ class App {
     async setUrl(event) {
         try {
             let url;
-            let imgSrc;
             if (event) {
-                // When the user enters a search, either by clicking on the button and pressing enter
+                // Search by keywords
                 if(event.type === "click" || event.key === "Enter") {
                     const searchResult = searchInput.value;
-                    const language = selectLanguage.value === "All languages"? "" : selectLanguage.value;
+                    const language = selectLanguage.value === "All languages"? "" : Object.keys(languages).find(key => languages[key] === selectLanguage.value);
                     url = `https://newsapi.org/v2/everything?q=${searchResult}&language=${language}&apiKey=${apiKey}`;
-                    imgSrc = nonHeadlinesImgSrc;
                     console.log(url);
                 } else if (event.type === "change" && (event.target === selectHeadlinesCategory || event.target === selectHeadlinesCountry)) {
-                    // When the user changes the value of the select category or select country
+                    // Headlines with a category or country selected
                     selectHeadlinesSource.value = "";
                     const category = selectHeadlinesCategory.value;
                     const countryName = selectHeadlinesCountry.value;
@@ -110,9 +128,8 @@ class App {
                     } else {
                         url = `https://newsapi.org/v2/top-headlines?category=${category}&country=${countryCode}&apiKey=${apiKey}`;
                     }
-                    imgSrc = headlinesImgSrc;
                 } else if (event.type === "change" && event.target === selectHeadlinesSource) {
-                    // When the user changes the value of the select source
+                    // Headlines with a source selected
                     selectHeadlinesCountry.value = "";
                     selectHeadlinesCategory.value = "";
                     const sourceName = selectHeadlinesSource.value;
@@ -122,18 +139,15 @@ class App {
                         const sourceId = await this.findSourceId(sourceName);
                         url = `https://newsapi.org/v2/top-headlines?sources=${sourceId}&apiKey=${apiKey}`;
                     }
-                    imgSrc = headlinesImgSrc;
                 }
             } else {
-                    // For the initial headline search (no event)
+                    // Headlines when the page loads (US results)
                     url = `https://newsapi.org/v2/top-headlines?country=us&apiKey=${apiKey}`;
-                    imgSrc = headlinesImgSrc;
                     selectHeadlinesCountry.value = "United States";
                     selectHeadlinesSource.value = "";
                     selectHeadlinesCategory.value = "";
             };
             this.currentUrl = url;
-            this.currentImgSrc = imgSrc;
         } catch(err) {
             console.log(err);
         }
@@ -163,7 +177,7 @@ class App {
             this.displayCustomSources(sourcesArr, articlesArr);
             const authorsArr = this.createCustomAuthorsArr(articlesArr);
             this.displayCustomAuthors(authorsArr, articlesArr);
-            this.displayArticlesArr(articlesArr, this.currentImgSrc, type);
+            this.displayArticlesArr(articlesArr, type);
         } catch(err) {
             console.log(err);
             alert("Please enter a valid search");
@@ -172,6 +186,7 @@ class App {
         }
     }
 
+    // Display custom article images in some use cases
     setUpImgSrc(article) {
         let imgSrc;
         if (article.source.name === "Google News") {
@@ -184,19 +199,21 @@ class App {
         return imgSrc;
     }
 
-    displayArticlesArr(arr, imgSrc, type) {
+    displayArticlesArr(arr, type) {
         for (let i = 0 ; i < arr.length ; i++) {
             let cardHTML = 
                 `<article class="card card-${i}" data-id=${i}>
                 <a class="card-img-url" href=${arr[i].url} target="_blank">
                 <div class="img-container">
-                    <img class="card-img" src=${this.setUpImgSrc(arr[i])} alt="Article image">
+                    <img class="card-img" src=${this.setUpImgSrc(arr[i])} alt="Article image" onerror="this.onerror=null;this.src='./images/world-news.jpg';">
                 </div>
                 </a>
-                <p class="bookmark"><i class="fa-solid fa-bookmark btn-bookmark"></i>Save for later</p>
+                <i class="fa-solid fa-bookmark btn-add-bookmark"></i>
+                <p class="card-save">Save for later</p>
                 <a class="card-title" href=${arr[i].url} target="_blank">${arr[i].title}</a>
                 <p class="card-source">${arr[i].source.name}</p>
                 <p class="card-author">${arr[i].author? arr[i].author : "Author unknown"}</p>
+                <p class="card-date">${arr[i].publishedAt? new Date(arr[i].publishedAt).toLocaleString() : ""}</p>
                 <p class="card-number">${i+1}/${arr.length}</p>
                 </article>`;
             document.querySelector(`.cards-container-${type} .cards-container`).insertAdjacentHTML("beforeend", cardHTML);
@@ -213,7 +230,7 @@ class App {
             // Delete Yahoo articles as we can't open the url
             let articlesArr = data.articles.filter(article => !article.url.includes("yahoo"));
             console.log(articlesArr);
-            // Delete the removed articles
+            // Delete the removed articles returned by the API
             articlesArr = articlesArr.filter(article => article.url !== "https://removed.com");
             return articlesArr;
         } catch(err) {
@@ -234,6 +251,7 @@ class App {
 
     async displayAPISources() {
         try {
+            console.log("test");
             selectHeadlinesSource.insertAdjacentHTML("beforeend", `<option value=""></option>`);
             const allSources = await this.getAPISources();
             console.log(allSources);
@@ -264,6 +282,19 @@ class App {
         return sourcesArr;
     }
 
+    // Helper function
+    createUniqueValuesArr(arr, valueObjectPath) {
+        const uniqueValuesArr = [];
+        for (let i = 0 ; i < arr.length ; i++) {
+            if (valueObjectPath) {
+                if (!uniqueValuesArr.includes(arr[i][valueObjectPath])) uniqueValuesArr.push(arr[i][valueObjectPath]);
+            } else {
+                if (!uniqueValuesArr.includes(arr[i])) uniqueValuesArr.push(arr[i]);
+            }
+        }
+        return uniqueValuesArr;
+    }
+
     displayCustomSources(sourcesArr, articlesArr) {
         selectSource.insertAdjacentHTML("beforeend", `<option>All sources</option>`);
         for (let i=0 ; i < sourcesArr.length ; i++) {
@@ -279,7 +310,8 @@ class App {
         const sourceArticlesArr = articlesArr.filter(article => article.source.name === sourceFilter);
         let articlesToDisplay = event.target.value === "All sources" ? articlesArr : sourceArticlesArr;
         this.clearElements(cardsContainer);
-        this.displayArticlesArr(articlesToDisplay, this.currentImgSrc, this.currentView);
+        this.displayArticlesArr(articlesToDisplay, this.currentView);
+        this.currentFilter = articlesToDisplay;
     }
 
     createCustomAuthorsArr(articlesArr) {
@@ -313,7 +345,8 @@ class App {
         console.log(authorArticlesArr);
         let articlesToDisplay = event.target.value === "All authors" ? articlesArr : authorArticlesArr;
         this.clearElements(cardsContainer);
-        this.displayArticlesArr(articlesToDisplay, this.currentImgSrc, this.currentView);
+        this.displayArticlesArr(articlesToDisplay, this.currentView);
+        this.currentFilter = articlesToDisplay;
     }
 
     displayCountries() {
@@ -336,10 +369,10 @@ class App {
     }
 
     displayLanguages() {
-        const languagesArr = ['ar', 'de', 'en', 'es', 'fr', 'he', 'it', 'nl', 'no', 'pt', 'ru', 'sv', 'ud', 'zh'];
+        let languagesNamesSortedArr = Object.values(languages).sort();
         selectLanguage.insertAdjacentHTML("beforeend", `<option value="All languages">All languages</option>`)
-        for(let i = 0 ; i < languagesArr.length ; i++) {
-            let html = `<option>${languagesArr[i]}</option>`;
+        for(let i = 0 ; i < languagesNamesSortedArr.length ; i++) {
+            let html = `<option>${languagesNamesSortedArr[i]}</option>`;
             selectLanguage.insertAdjacentHTML("beforeend", html);
         }
     }
@@ -356,10 +389,11 @@ class App {
 
     async addBookmark(e) {
         try {
-            if (!e.target.classList.contains("btn-bookmark")) return;
-            const articlesArr = await this.getArticlesArr(this.currentUrl);
+            if (!e.target.classList.contains("btn-add-bookmark")) return;
+            const articlesArr = this.currentFilter? this.currentFilter : await this.getArticlesArr(this.currentUrl);
             const card = e.target.closest(".card");
             const id = card.dataset.id;
+            articlesArr[id].savedDate = new Date().toLocaleString();
             articlesArr[id].bookmarkId = crypto.randomUUID();
             bookmarksArr.push(articlesArr[id]);
             localStorage.setItem("bookmarks", JSON.stringify(bookmarksArr));
@@ -370,40 +404,82 @@ class App {
     }
 
     displayBookmarks(bookmarks) {
-        const bookmarksEl = bookmarks.map(bookmark => `<div class="bookmark" data-id=${bookmark.bookmarkId}><a class="bookmark-title" href=${bookmark.url} target="_blank"><i class="fa-solid fa-bookmark"></i>${bookmark.title}</a><button type="button" class="btn-delete-bookmark"><i class="fa-regular fa-trash-can"></i></button><hr></div>`).join("");
+        const bookmarksEl = bookmarks.map(bookmark => {
+            return `
+                <div class="bookmark" data-id=${bookmark.bookmarkId}>
+                    <a class="bookmark-title" href=${bookmark.url} target="_blank"><i class="fa-solid fa-bookmark"></i>${bookmark.title}</a>
+                    <p class="bookmark-source">${bookmark.source.name}</p>
+                    <p class="bookmark-author">${bookmark.author? bookmark.author : "Author unknown"}</p>
+                    <p class="bookmark-date">Saved the ${bookmark.savedDate}</p>
+                    <div class="bookmark-icons-container">
+                        <button type="button" class="btn-delete-bookmark"><i class="fa-regular fa-trash-can"></i></button>
+                        <i class="fa-solid fa-image"></i>
+                        <img class="card-img-bookmark" src=${this.setUpImgSrc(bookmark)} alt="Article image" onerror="this.onerror=null;this.src='./images/world-news.jpg';">
+                    </div>
+                    <hr>
+                </div>`
+            }).join("");
         document.querySelector(".bookmarks").innerHTML = bookmarksEl;
         document.querySelectorAll(".btn-delete-bookmark").forEach(btn => btn.addEventListener("click", this.deleteBookmark.bind(this)));
-    }
-
-    closeAside() {
-        document.querySelector("aside").style.translate = "100%";
+        bookmarksCount.innerHTML = `Articles saved : ${bookmarksArr.length || "0"}`;
     }
 
     openAside() {
-        document.querySelector("aside").style.translate = "0%";
+        bookmarksAside.style.translate = "0%";
+    }
+
+    closeAside() {
+        bookmarksAside.style.translate = "100%";
     }
 
     deleteBookmark(e) {
         console.log("deleted");
-        const bookmark = e.target.closest(".bookmark");
-        console.log(bookmark);
-        const bookmarkId = bookmark.dataset.id;
-        console.log(bookmarkId);
-        // remove the relevant bookmark. Use filter ? 
-        // find the position of the bookmark using the bookmarkId ?
-        const index = bookmarksArr.findIndex(bookmark => bookmark.bookmarkId === bookmarkId);
-        console.log(index);
-        bookmarksArr.splice(index, 1);
-        console.log(bookmarksArr);
-        localStorage.setItem("bookmarks", JSON.stringify(bookmarksArr));
-        bookmark.remove();
+        if (confirm("The bookmark will be deleted permanently.") === true) {
+            const bookmark = e.target.closest(".bookmark");
+            console.log(bookmark);
+            const bookmarkId = bookmark.dataset.id;
+            console.log(bookmarkId);
+            // remove the relevant bookmark. Use filter ? 
+            // find the position of the bookmark using the bookmarkId ?
+            const index = bookmarksArr.findIndex(bookmark => bookmark.bookmarkId === bookmarkId);
+            console.log(index);
+            bookmarksArr.splice(index, 1);
+            console.log(bookmarksArr);
+            localStorage.setItem("bookmarks", JSON.stringify(bookmarksArr));
+            bookmark.remove();
+            bookmarksCount.innerHTML = `Articles saved : ${bookmarksArr.length || "0"}`;
+        }
     }
 
+    createSourcesTable() {
+        fetch(`https://newsapi.org/v2/top-headlines/sources?apiKey=${apiKey}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === "error") throw new Error("You have made too many requests recently. Developer accounts are limited to 100 requests over a 24 hour period (50 requests available every 12 hours). Please upgrade to a paid plan if you need more requests.");
+            data.sources.forEach(source => {
+                const rowHTML = `
+                    <tr>
+                        <td class="modal-source-name">
+                            <a href="${source.url}" target="_blank">${source.name}</a>
+                        </td>
+                        <td class="modal-source-description">${source.description}</td>
+                        <td>${source.category}</td>
+                        <td>${languages[source.language]}</td>
+                        <td>${countries[source.country]||source.country}</td>
+                    </tr>
+                `;
+                sourceTable.insertAdjacentHTML("beforeend", rowHTML);
+            })
+            console.log(data);
+        })
+        .catch(err => alert(err));
+    }
 
-    
+    openModal() {
+        modal.style.display = "block";
+        this.closeAside();
+    }
 }
-
-//const name = document.querySelector(".test").tagName;
 
 const app = new App();
 
