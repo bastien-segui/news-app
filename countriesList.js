@@ -1,4 +1,4 @@
-// List from https://newsapi.org/docs/endpoints/top-headlines
+// List from https://newsapi.org/docs/endpoints/top-headlines and https://newsapi.org/docs/endpoints/sources
 
 export default {
     "ae": "United Arab Emirates",
@@ -16,6 +16,7 @@ export default {
     "cz": "Czechia",
     "de": "Germany",
     "eg": "Egypt",
+    "es": "Spain",
     "fr": "France",
     "gb": "United Kingdom",
     "gr": "Greece",
@@ -25,6 +26,7 @@ export default {
     "ie": "Ireland",
     "il": "Israel",
     "in": "India",
+    "is": "Israel",
     "it": "Italy",
     "jp": "Japan",
     "kr": "South Korea",
@@ -38,6 +40,7 @@ export default {
     "no": "Norway",
     "nz": "New Zealand",
     "ph": "Philippines",
+    "pk": "Pakistan",
     "pl": "Poland",
     "pt": "Portugal",
     "ro": "Romania",
@@ -54,5 +57,6 @@ export default {
     "ua": "Ukraine",
     "us": "United States",
     "ve": "Venezuela",
-    "za": "South Africa"
+    "za": "South Africa",
+    "zh": "China"
 };

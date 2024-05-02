@@ -8,7 +8,7 @@ export default {
     "fr": "French",
     "he": "Hebrew",
     "it": "Italian",
-    "nl": "Duthc",
+    "nl": "Dutch",
     "no": "Norwegian",
     "pt": "Portuguese",
     "ru": "Russian",

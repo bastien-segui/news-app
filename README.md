@@ -17,11 +17,19 @@ After the page has loaded, I decided to display the United States headlines beca
 
 The countries, categories, languages, and sources are listed in the API documentation (https://newsapi.org/docs/endpoints).
 However the lists of countries and sources are not exhaustive.
+
 The countries and languages are returned using a 2-letter code, respectively ISO 3166-1 and ISO-639-1.
 For better readibility, the countries and the languages are displayed in full letters.
 To convert the country code to country name, I used the method DisplayNames of the Internationalization API (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DisplayNames).
 As the number of languages was low, I manually converted the language code to the language name.
 I created objects to link the codes and the names, stored in separate modules called "languagesList.js" and "countriesList.js".
+
+The following country codes were returned by the Sources endpoint but were not mentioned in the documentation, so I added them inside countriesList.js :
+
+- is : Israel
+- pk : Pakistan
+- sp : Spain
+- zh : China
 
 I created two views for the two main API endpoint, one called "Headlines" for the "Top headlines" API endpoint and another one called "Search by keywords" for the "Everything" endpoint.
 https://newsapi.org/docs/endpoints

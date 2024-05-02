@@ -12,7 +12,7 @@
         <span class="logo-title">News App</span>
         <div>
             <button type="button" class="btn-headlines">Headlines</button>
-            <button type="button" class="btn-everything">Search by keywords</button>
+            <button type="button" class="btn-everything">Search keywords</button>
         </div>
         <button type="button" class="btn-open-aside"><i class="fa-solid fa-bookmark btn-bookmark"></i></button>
     </header>
@@ -20,18 +20,28 @@
     <section class="modal">
         <div class="modal-content">
             <span class="btn-close-modal">&times;</span>
-            <h1>Sources available</h1>
+            <h1 class="modal-sources-count"></h1>
             <table class="source-table">
-                <tr class="table-headings">
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>Category <br><select name="" id=""></select></th>
-                    <th>Language <br><select name="" id=""></select></th>
-                    <th>Country <br><select name="" id=""></select></th>
-                </tr>
-                <!-- Sources information rows -->
+                <thead>
+                    <tr class="table-headings">
+                        <th>Source</th>
+                        <th>Description</th>
+                        <th>Category <br>
+                            <select class="table-category-select" name="" id=""></select>
+                        </th>
+                        <th>Language <br>
+                            <select class="table-language-select" name="" id=""></select>
+                        </th>
+                        <th>Country <br>
+                            <select class="table-country-select" name="" id=""></select>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="table-data">
+                    <!-- Sources information rows -->
+                </tbody>
             </table>
-          </div>
+        </div>
     </section>
     <section class="search-headlines">
         <p>Search by</p>

@@ -46,10 +46,11 @@ header * {
 }
 
 .btn-headlines, .btn-everything {
-    border-radius:10px;
+    border-radius:5px;
     padding:4px 8px;
     border:1px solid black;
     color:black;
+    font-size:20px;
 }
 
 .btn-headlines:hover, .btn-everything:hover {
@@ -78,7 +79,7 @@ header * {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
     z-index: 1; /* Sit on top */
-    padding-top: 100px; /* Location of the box */
+    padding-top: 50px; /* Location of the box */
     left: 0;
     top: 0;
     width: 100%; /* Full width */
@@ -94,6 +95,7 @@ header * {
     padding: 20px;
     border: 1px solid #888;
     width: 80%;
+    min-width:660px;
 }
   
 .btn-close-modal {
@@ -124,6 +126,10 @@ table, th, td {
     padding:5px;
 }
 
+.table-category-select, .table-category-select option, .table-category {
+    text-transform:capitalize;
+}
+
 .modal-source-name {
     font-weight:bold;
 }
@@ -142,6 +148,10 @@ table, th, td {
 
 .select-headline-country {
     margin-right:10px;
+}
+
+.select-headline-category, .select-headline-category option {
+    text-transform:capitalize;
 }
 
 .fa-circle-info {
@@ -222,7 +232,7 @@ article:hover img {
 
 .card-title {
     display:block;
-    margin:10px 0;
+    margin:20px 0;
     font-weight:bold;
     text-decoration:none;
     color:black;
@@ -232,10 +242,23 @@ article:hover img {
     color:rgb(0, 0, 238);
 }
 
+.card-source {
+    text-decoration:none;
+    color:black;
+}
+
+.card-source:hover {
+    color:rgb(0, 0, 238);
+}
+
 .card-author, .card-number, .card-date {
     font-size:12px;
     font-style:italic;
     margin:10px 0;
+}
+
+.fa-x-twitter {
+    color:black;
 }
 
 /* ASIDE FOR BOOKMARKS*/
@@ -289,8 +312,8 @@ aside {
 
 .card-img-bookmark {
     display:none;
-    width:150px;
-    height:100px;
+    width:175px;
+    height:125px;
     border-radius:5px;
     border:1px solid grey;
 }
@@ -314,6 +337,15 @@ aside {
 }
 
 .bookmark-title:hover {
+    color:rgb(0, 0, 238);
+}
+
+.bookmark-source {
+    color:black;
+    text-decoration:none;
+}
+
+.bookmark-source:hover {
     color:rgb(0, 0, 238);
 }
 
@@ -355,6 +387,7 @@ aside {
     background-color:rgba(49, 46, 46, 0.336);
     color:#fff;
     z-index:3;
+    display:none;
 }
 
 .fa-arrow-up-long {
@@ -377,18 +410,10 @@ aside {
     .card {
         height:auto;
     }
-
-    .btn-open-modal {
-        display:none;
-    }
 }
 
 @media only screen and (max-width:768px) {
     .cards-container {
         grid-template-columns:1fr 1fr;
-    }
-
-    .btn-open-modal {
-        display:none;
     }
 }
